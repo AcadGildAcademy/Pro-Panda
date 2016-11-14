@@ -6,8 +6,9 @@ var express = require('express'),
 var db = mongoose.connect('mongodb://localhost/acadglid');
 
 var SignUp   = require('./models/signupMeetModel');
-var partyDetails = require('./models/partyDetailsModel');
-var Place = require('./models/placeModel');
+var Booking = require('./models/putBookingModel');
+var Categories = require('./models/meetUpCategoriesModel');
+
 var app = express();
 
 app.use(bodyParser.urlencoded({extended:true}));
@@ -25,6 +26,24 @@ commanRouter.route('/signups')
 
    });
 
+commanRouter.route('/booking')
+    .post(function(req,res){
+      var booking = new Booking(req.body);
+      booking.save();
+
+
+   });
+
+commanRouter.route('/getMeetUpCategories')
+    .get(function(req,res){
+    Categories.find(function(err,data){
+      if(err)
+         res.status(500).send(err);
+      else
+        res.json({"List":data});
+    })
+});
+
 commanRouter.route('/signin')
     .get(function(req,res,next){
     var query ={};
@@ -40,6 +59,8 @@ commanRouter.route('/signin')
     })
 
 });
+
+
 
 app.use('/api', commanRouter);
 
